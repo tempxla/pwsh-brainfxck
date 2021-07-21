@@ -1,5 +1,5 @@
 BeforeAll {
-    . ./Brainfxck.ps1
+    . $PSScriptRoot/Brainfxck.ps1
 }
 
 Describe 'helloWorld' {
