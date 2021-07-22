@@ -5,12 +5,16 @@ $ErrorActionPreference = 'Stop'
 
 [int]$script:BfPointer = 0
 
+[string]$script:BfStdin = $null
+
 function Initialize-BfRuntime {
     param (
-        [int]$MemorySize = 5000
+        [int]$MemorySize = 5000,
+        [string]$UserInput = ''
     )
     $script:BfMemory = @(1..$MemorySize) | ForEach-Object { 0 }
     $script:BfPointer = 0
+    $script:BfStdin = $UserInput
 }
 
 # Op: >
@@ -40,8 +44,6 @@ function OutputValueAtPointer {
 
 # Op: ,
 function StoreValueAtPointer {
-    param (
-        [int]$InputByte
-    )
-    $script:BfMemory[$script:BfPointer] = $InputByte
+    $script:BfMemory[$script:BfPointer] = $script:BfStdin[0]
+    $script:BfStdin = $script:BfStdin.Substring(1, $script:BfStdin.Length - 1)
 }

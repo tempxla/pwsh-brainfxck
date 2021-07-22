@@ -13,6 +13,9 @@ Describe 'Initialize-BfRuntime' {
         Initialize-BfRuntime -MemorySize 12000
         $BfMemory.Length | Should -Be 12000
     }
+    It 'ユーザー入力を初期化する' {
+        $BfStdin | Should -Be ''
+    }
 }
 
 Describe 'IncrementPointer' {
@@ -65,8 +68,10 @@ Describe 'OutputValueAtPointer' {
 }
 
 Describe 'StoreValueAtPointer' {
-    It '1バイトの入力をポインターが指す先に代入する' {
-        StoreValueAtPointer -InputByte 3
-        $BfMemory[0] | Should -Be 3
+    It '入力から1バイト読み込み、ポインターが指す先に代入する。' {
+        Initialize-BfRuntime -UserInput 'abc'
+        StoreValueAtPointer
+        $BfMemory[0] | Should -Be 'a'
+        $BfStdin | Should -Be 'bc'
     }
 }
