@@ -1,12 +1,6 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-[array]$script:BfMemory = $null
-
-[int]$script:BfPointer = 0
-
-[string]$script:BfStdin = $null
-
 function Initialize-BfRuntime {
     param (
         [int]$MemorySize = 5000,
@@ -17,33 +11,62 @@ function Initialize-BfRuntime {
     $script:BfStdin = $UserInput
 }
 
+function New-BfMachine {
+    param (
+        [string]$UserInput = ''
+    )
+    @{
+        Memory  = @(1..3000) | ForEach-Object { 0 }
+        Pointer = 0
+        Stdin   = $UserInput
+    }
+}
+
 # Op: >
 function IncrementPointer {
-    $script:BfPointer++
+    param (
+        $State
+    )
+    $State.Pointer++
 }
 
 # Op: <
 function DecrementPointer {
-    $script:BfPointer--
+    param (
+        $State
+    )
+    $State.Pointer--
 }
 
 # Op: +
 function IncrementValueAtPointer {
-    $script:BfMemory[$script:BfPointer]++
+    param (
+        $State
+    )
+    $State.Memory[$State.Pointer]++
 }
 
 # Op: -
 function DecrementValueAtPointer {
-    $script:BfMemory[$script:BfPointer]--
+    param (
+        $State
+    )
+    $State.Memory[$State.Pointer]--
 }
 
 # Op: .
 function OutputValueAtPointer {
-    Write-Host -NoNewline -Object $script:BfMemory[$script:BfPointer]
+    param (
+        $State
+    )
+    Write-Host -NoNewline -Object $State.Memory[$State.Pointer]
 }
 
 # Op: ,
 function StoreValueAtPointer {
-    $script:BfMemory[$script:BfPointer] = $script:BfStdin[0]
-    $script:BfStdin = $script:BfStdin.Substring(1, $script:BfStdin.Length - 1)
+    param (
+        $State
+    )
+    $State.Memory[$State.Pointer] = $State.Stdin[0]
+    $State.Stdin = $State.Stdin.Substring(1, $State.Stdin.Length - 1)
 }
