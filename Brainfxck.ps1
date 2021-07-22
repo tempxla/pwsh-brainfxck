@@ -119,19 +119,11 @@ function Run-BfMachine {
             '-' { DecrementValueAtPointer $BfMachine; break; }
             '.' { OutputValueAtPointer $BfMachine; break; }
             ',' { StoreValueAtPointer $BfMachine; break; }
-            '[' { $mustMoveCounter = JumpIfZeroAtPointer $BfMachine; break; }
-            ']' { $mustMoveCounter = JumpIfNotZeroAtPointer $BfMachine; break; }
+            '[' { $mustMoveCounter = -not (JumpIfZeroAtPointer $BfMachine); break; }
+            ']' { $mustMoveCounter = -not (JumpIfNotZeroAtPointer $BfMachine); break; }
         }
         if ($mustMoveCounter) {
             $BfMachine.ProgramCounter++
         }
     }
-}
-
-function Test-BfMachine {
-    $source = @'
-++++++++++++++++++++++++++++++++++++++++
-+++++++++++++++++++++++++.+.+.>++++++++++.
-'@
-    New-BfMachine | Run-BfMachine -Source $source
 }

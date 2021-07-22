@@ -126,4 +126,13 @@ Describe 'Run-BfMachine' {
         New-BfMachine | Run-BfMachine -Source $source
         $BfStdout | Should -Be "ABC`n"
     }
+    It 'Hello World!を出力する' {
+        $source = @'
+>+++++++++[<++++++++>-]<.>+++++++[<++++>-]<+.+++++++..+++.[-]>++++++++[<++
+++>-]<.>+++++++++++[<+++++>-]<.>++++++++[<+++>-]<.+++.------.--------.[-]>
+++++++++[<++++>-]<+.[-]++++++++++.
+'@
+        New-BfMachine | Run-BfMachine -Source $source
+        $BfStdout | Should -Be "Hello World!`n"
+    }
 }
