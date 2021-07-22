@@ -14,3 +14,13 @@ Describe 'Initialize-BfRuntime' {
         $BfMemory.Length | Should -Be 12000
     }
 }
+
+Describe 'IncrementPointer' {
+    It 'ポインターをインクリメントする' {
+        Initialize-BfRuntime
+        IncrementPointer
+        $BfPointer | Should -Be 1
+        IncrementPointer
+        $BfPointer | Should -Be 2
+    }
+}

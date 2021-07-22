@@ -10,4 +10,9 @@ function Initialize-BfRuntime {
         [int]$MemorySize = 5000
     )
     $script:BfMemory = @(1..$MemorySize) | ForEach-Object { 0 }
+    $script:BfPointer = 0
+}
+
+function IncrementPointer {
+    $script:BfPointer++
 }
