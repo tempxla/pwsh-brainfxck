@@ -26,7 +26,7 @@ Describe 'New-BfMachine' {
     }
     It '仮想マシンの初期状態を生成時、カッコの対応付を行う' {
         $vm = New-BfMachine -Source '[[++]++]'
-        MapToJson($vm.ParenthesesMap) | Should -Be (MapToJson(@{'0' = 7; '1' = 4 }))
+        MapToJson($vm.ParenthesesMap) | Should -Be (MapToJson(@{'0' = 7; '1' = 4; '7' = 0; '4' = 1 }))
     }
 }
 
@@ -81,6 +81,7 @@ Describe 'StoreValueAtPointer' {
 Describe 'JumpIfZeroAtPointer' {
     It 'ポインタが指す値が0の場合、対応する]の直後にジャンプする' {
         $vm = New-BfMachine -Source "[[++]++]"
+        $vm.Memory[0] = 0
         $vm.ProgramCounter = 0
         JumpIfZeroAtPointer -State $vm
         $vm.ProgramCounter | Should -Be 8
@@ -92,6 +93,25 @@ Describe 'JumpIfZeroAtPointer' {
         $vm = New-BfMachine -Source "[[++]++]"
         $vm.Memory[0] = 1
         JumpIfZeroAtPointer -State $vm
+        $vm.ProgramCounter | Should -Be 0
+    }
+}
+
+Describe 'JumpIfNotZeroAtPointer' {
+    It 'ポインタが指す値が0でない場合、対応する[の直後にジャンプする' {
+        $vm = New-BfMachine -Source "[[++]++]"
+        $vm.Memory[0] = 1
+        $vm.ProgramCounter = 7
+        JumpIfNotZeroAtPointer -State $vm
+        $vm.ProgramCounter | Should -Be 1
+        $vm.ProgramCounter = 4
+        JumpIfNotZeroAtPointer -State $vm
+        $vm.ProgramCounter | Should -Be 2
+    }
+    It 'ポインタが指す値が0の場合、対応する[の直後にジャンプしない' {
+        $vm = New-BfMachine -Source "[[++]++]"
+        $vm.Memory[0] = 0
+        JumpIfNotZeroAtPointer -State $vm
         $vm.ProgramCounter | Should -Be 0
     }
 }

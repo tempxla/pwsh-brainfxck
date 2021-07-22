@@ -17,7 +17,9 @@ function New-BfMachine {
                     break
                 }
                 ']' {
-                    $parenMap[$openParens.Pop().ToString()] = $i
+                    $v = $openParens.Pop()
+                    $parenMap[$v.ToString()] = $i
+                    $parenMap[$i.ToString()] = $v
                     break
                 }
             }
@@ -75,6 +77,13 @@ function StoreValueAtPointer($State) {
 # Op: [
 function JumpIfZeroAtPointer($State) {
     if ($State.Memory[$State.Pointer] -eq 0) {
+        $State.ProgramCounter = $State.ParenthesesMap[$State.ProgramCounter.ToString()] + 1
+    }
+}
+
+# Op: ]
+function JumpIfNotZeroAtPointer($State) {
+    if (-not $State.Memory[$State.Pointer] -eq 0) {
         $State.ProgramCounter = $State.ParenthesesMap[$State.ProgramCounter.ToString()] + 1
     }
 }
