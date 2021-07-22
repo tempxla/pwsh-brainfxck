@@ -63,3 +63,10 @@ Describe 'OutputValueAtPointer' {
         Assert-MockCalled Write-Host -Exactly 1 -Scope It -ParameterFilter { $Object -eq '0' }
     }
 }
+
+Describe 'StoreValueAtPointer' {
+    It '1バイトの入力をポインターが指す先に代入する' {
+        StoreValueAtPointer -InputByte 3
+        $BfMemory[0] | Should -Be 3
+    }
+}

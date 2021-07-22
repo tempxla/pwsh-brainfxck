@@ -37,3 +37,11 @@ function DecrementValueAtPointer {
 function OutputValueAtPointer {
     Write-Host -NoNewline -Object $script:BfMemory[$script:BfPointer]
 }
+
+# Op: ,
+function StoreValueAtPointer {
+    param (
+        [int]$InputByte
+    )
+    $script:BfMemory[$script:BfPointer] = $InputByte
+}
