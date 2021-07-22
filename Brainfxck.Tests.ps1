@@ -3,14 +3,14 @@ BeforeAll {
 }
 
 Describe 'New-BfMachine' {
-    It '仮想マシンの初期状態を作成する' {
+    It 'デフォルト値で仮想マシンの初期状態を作成する' {
         $vm = New-BfMachine
         $vm.Memory.Length | Should -Be 3000
         $vm.Memory | Where-Object { -not $_ -eq 0 } | Should -Be @()
         $vm.Pointer | Should -Be 0
         $vm.Stdin | Should -Be ''
     }
-    It 'ユーザーの入力ありの場合' {
+    It 'Stdinパラメータを指定して仮想マシンの初期状態を作成する' {
         $vm = New-BfMachine -Stdin 'abc'
         $vm.Stdin | Should -Be 'abc'
     }
