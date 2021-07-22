@@ -1,12 +1,24 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+[string]$script:BfStdout = ''
+
 function New-BfMachine {
     param (
         [string]$Source = '',
         [string]$Stdin = ''
     )
-    # Parse Parentheses
+    @{
+        Memory         = @(1..3000) | ForEach-Object { 0 }
+        Pointer        = 0
+        ProgramCounter = 0
+        Source         = $Source
+        Stdin          = $Stdin
+        ParenthesesMap = ParseParentheses $Source
+    }
+}
+
+function ParseParentheses([string]$Source) {
     $parenMap = @{}
     $openParens = New-Object Collections.Stack
     try {
@@ -32,15 +44,7 @@ function New-BfMachine {
     if ($openParens.Count > 0) {
         throw '★Error at Parse Parenthesis: Too Many "["'
     }
-    # Returns
-    @{
-        Memory         = @(1..3000) | ForEach-Object { 0 }
-        Pointer        = 0
-        ProgramCounter = 0
-        Source         = $Source
-        Stdin          = $Stdin
-        ParenthesesMap = $parenMap
-    }
+    $parenMap
 }
 
 # Op: >
@@ -65,7 +69,8 @@ function DecrementValueAtPointer($State) {
 
 # Op: .
 function OutputValueAtPointer($State) {
-    Write-Host -NoNewline -Object $State.Memory[$State.Pointer]
+    Write-Host -NoNewline -Object ([char]($State.Memory[$State.Pointer]))
+    $script:BfStdout += ([char]($State.Memory[$State.Pointer]))
 }
 
 # Op: ,
@@ -78,12 +83,55 @@ function StoreValueAtPointer($State) {
 function JumpIfZeroAtPointer($State) {
     if ($State.Memory[$State.Pointer] -eq 0) {
         $State.ProgramCounter = $State.ParenthesesMap[$State.ProgramCounter.ToString()] + 1
+        return $true
     }
+    $false
 }
 
 # Op: ]
 function JumpIfNotZeroAtPointer($State) {
     if (-not $State.Memory[$State.Pointer] -eq 0) {
         $State.ProgramCounter = $State.ParenthesesMap[$State.ProgramCounter.ToString()] + 1
+        return $true
     }
+    $false
+}
+
+function Run-BfMachine {
+    param (
+        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        $BfMachine,
+        [Parameter(Mandatory = $true, ValueFromPipelineByPropertyName)]
+        [string]$Source,
+        [string]$Stdin
+    )
+    $script:BfStdout = ''
+
+    $BfMachine.Source = $Source
+    $BfMachine.ParenthesesMap = ParseParentheses $Source
+    $BfMachine.Stdin = $Stdin
+    while ($BfMachine.ProgramCounter -lt $Source.Length) {
+        $mustMoveCounter = $true
+        switch ($Source[$BfMachine.ProgramCounter]) {
+            '>' { IncrementPointer $BfMachine; break; }
+            '<' { DecrementPointer $BfMachine; break; }
+            '+' { IncrementValueAtPointer $BfMachine; break; }
+            '-' { DecrementValueAtPointer $BfMachine; break; }
+            '.' { OutputValueAtPointer $BfMachine; break; }
+            ',' { StoreValueAtPointer $BfMachine; break; }
+            '[' { $mustMoveCounter = JumpIfZeroAtPointer $BfMachine; break; }
+            ']' { $mustMoveCounter = JumpIfNotZeroAtPointer $BfMachine; break; }
+        }
+        if ($mustMoveCounter) {
+            $BfMachine.ProgramCounter++
+        }
+    }
+}
+
+function Test-BfMachine {
+    $source = @'
+++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++.+.+.>++++++++++.
+'@
+    New-BfMachine | Run-BfMachine -Source $source
 }

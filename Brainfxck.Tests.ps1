@@ -26,7 +26,7 @@ Describe 'New-BfMachine' {
     }
     It '仮想マシンの初期状態を生成時、カッコの対応付を行う' {
         $vm = New-BfMachine -Source '[[++]++]'
-        MapToJson($vm.ParenthesesMap) | Should -Be (MapToJson(@{'0' = 7; '1' = 4; '7' = 0; '4' = 1 }))
+        MapToJson $vm.ParenthesesMap | Should -Be (MapToJson @{'0' = 7; '1' = 4; '7' = 0; '4' = 1 })
     }
 }
 
@@ -63,9 +63,10 @@ Describe 'DecrementValueAtPointer' {
 Describe 'OutputValueAtPointer' {
     It 'ポインターが指す値を出力に書き出す' {
         $vm = New-BfMachine
+        $vm.Memory[0] = 65
         Mock Write-Host {}
         OutputValueAtPointer -State $vm
-        Assert-MockCalled Write-Host -Exactly 1 -Scope It -ParameterFilter { $Object -eq '0' }
+        Assert-MockCalled Write-Host -Exactly 1 -Scope It -ParameterFilter { $Object -eq 'A' }
     }
 }
 
@@ -113,5 +114,16 @@ Describe 'JumpIfNotZeroAtPointer' {
         $vm.Memory[0] = 0
         JumpIfNotZeroAtPointer -State $vm
         $vm.ProgramCounter | Should -Be 0
+    }
+}
+
+Describe 'Run-BfMachine' {
+    It 'ABCを出力する' {
+        $source = @'
+++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++.+.+.>++++++++++.
+'@
+        New-BfMachine | Run-BfMachine -Source $source
+        $BfStdout | Should -Be "ABC`n"
     }
 }
