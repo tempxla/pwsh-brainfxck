@@ -2,12 +2,6 @@ BeforeAll {
     . $PSScriptRoot/Brainfxck.ps1
 }
 
-Describe 'helloWorld' {
-    It 'Returns "Hello World"' {
-        helloWorld | Should -Be 'Hello World'
-    }
-}
-
 Describe 'Initialize-BfRuntime' {
     It '要素数5000の配列を0で初期化する' {
         Initialize-BfRuntime
