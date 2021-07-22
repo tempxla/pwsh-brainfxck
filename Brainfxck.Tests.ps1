@@ -14,4 +14,8 @@ Describe 'Initialize-BfRuntime' {
         $BfMemory.Length | Should -Be 5000
         $BfMemory | Where-Object {-not $_ -eq 0} | Should -Be @()
     }
+    It '要素数を指定して配列を生成する場合' {
+        Initialize-BfRuntime -MemorySize 12000
+        $BfMemory.Length | Should -Be 12000
+    }
 }

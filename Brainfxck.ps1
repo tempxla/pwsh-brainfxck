@@ -7,6 +7,6 @@ function helloWorld {
 
 [array]$script:BfMemory = $null
 
-function Initialize-BfRuntime {
-    $script:BfMemory = @(1..5000) | ForEach-Object {0}
+function Initialize-BfRuntime ([int]$MemorySize = 5000) {
+    $script:BfMemory = @(1..$MemorySize) | ForEach-Object {0}
 }
