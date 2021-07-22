@@ -13,50 +13,32 @@ function New-BfMachine {
 }
 
 # Op: >
-function IncrementPointer {
-    param (
-        $State
-    )
+function IncrementPointer($State) {
     $State.Pointer++
 }
 
 # Op: <
-function DecrementPointer {
-    param (
-        $State
-    )
+function DecrementPointer($State) {
     $State.Pointer--
 }
 
 # Op: +
-function IncrementValueAtPointer {
-    param (
-        $State
-    )
+function IncrementValueAtPointer($State) {
     $State.Memory[$State.Pointer]++
 }
 
 # Op: -
-function DecrementValueAtPointer {
-    param (
-        $State
-    )
+function DecrementValueAtPointer($State) {
     $State.Memory[$State.Pointer]--
 }
 
 # Op: .
-function OutputValueAtPointer {
-    param (
-        $State
-    )
+function OutputValueAtPointer($State) {
     Write-Host -NoNewline -Object $State.Memory[$State.Pointer]
 }
 
 # Op: ,
-function StoreValueAtPointer {
-    param (
-        $State
-    )
+function StoreValueAtPointer($State) {
     $State.Memory[$State.Pointer] = $State.Stdin[0]
     $State.Stdin = $State.Stdin.Substring(1, $State.Stdin.Length - 1)
 }
