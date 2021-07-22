@@ -46,5 +46,14 @@ Describe 'IncrementValueAtPointer' {
 }
 
 Describe 'DecrementValueAtPointer' {
+    It 'ポインターが指す値をデクリメントする' {
+        Initialize-BfRuntime
+        DecrementValueAtPointer
+        $BfMemory[0] | Should -Be -1
+        DecrementValueAtPointer
+        $BfMemory[0] | Should -Be -2
+    }
+}
+Describe 'DecrementValueAtPointer' {
     # undefined
 }

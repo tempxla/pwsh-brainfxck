@@ -27,3 +27,8 @@ function DecrementPointer {
 function IncrementValueAtPointer {
     $script:BfMemory[$script:BfPointer]++
 }
+
+# Op: -
+function DecrementValueAtPointer {
+    $script:BfMemory[$script:BfPointer]--
+}
