@@ -1,5 +1,9 @@
 BeforeAll {
     . $PSScriptRoot/Brainfxck.ps1
+
+    function MapToJson($Map) {
+        $Map.GetEnumerator() | Sort-Object -Property Key | ConvertTo-Json
+    }
 }
 
 Describe 'New-BfMachine' {
@@ -9,20 +13,20 @@ Describe 'New-BfMachine' {
         $vm.Memory | Where-Object { -not $_ -eq 0 } | Should -Be @()
         $vm.Pointer | Should -Be 0
         $vm.Stdin | Should -Be ''
+        $vm.Source | Should -Be ''
+        $vm.ProgramCounter | Should -Be 0
     }
     It 'Stdinパラメータを指定して仮想マシンの初期状態を作成する' {
         $vm = New-BfMachine -Stdin 'abc'
         $vm.Stdin | Should -Be 'abc'
     }
-}
-
-Describe 'IncrementPointer' {
-    It 'ポインターをインクリメントする' {
-        $vm = New-BfMachine
-        IncrementPointer -State $vm
-        $vm.Pointer | Should -Be 1
-        IncrementPointer -State $vm
-        $vm.Pointer | Should -Be 2
+    It 'Sourceパラメータを指定して仮想マシンの初期状態を作成する' {
+        $vm = New-BfMachine -Source '[[++]++]'
+        $vm.Source | Should -Be '[[++]++]'
+    }
+    It '仮想マシンの初期状態を生成時、カッコの対応付を行う' {
+        $vm = New-BfMachine -Source '[[++]++]'
+        MapToJson($vm.ParenthesesMap) | Should -Be (MapToJson(@{'0' = 7; '1' = 4 }))
     }
 }
 
@@ -71,5 +75,23 @@ Describe 'StoreValueAtPointer' {
         StoreValueAtPointer -State $vm
         $vm.Memory[0] | Should -Be 'a'
         $vm.Stdin | Should -Be 'bc'
+    }
+}
+
+Describe 'JumpIfZeroAtPointer' {
+    It 'ポインタが指す値が0の場合、対応する]の直後にジャンプする' {
+        $vm = New-BfMachine -Source "[[++]++]"
+        $vm.ProgramCounter = 0
+        JumpIfZeroAtPointer -State $vm
+        $vm.ProgramCounter | Should -Be 8
+        $vm.ProgramCounter = 1
+        JumpIfZeroAtPointer -State $vm
+        $vm.ProgramCounter | Should -Be 5
+    }
+    It 'ポインタが指す値が0でない場合、対応する]の直後にジャンプしない' {
+        $vm = New-BfMachine -Source "[[++]++]"
+        $vm.Memory[0] = 1
+        JumpIfZeroAtPointer -State $vm
+        $vm.ProgramCounter | Should -Be 0
     }
 }
