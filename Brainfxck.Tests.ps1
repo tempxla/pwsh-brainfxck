@@ -3,10 +3,11 @@ BeforeAll {
 }
 
 Describe 'Initialize-BfRuntime' {
-    It '要素数5000の配列を0で初期化する' {
+    It '要素数5000の配列を0で初期化し、ポインターを最初の位置にセットする' {
         Initialize-BfRuntime
         $BfMemory.Length | Should -Be 5000
         $BfMemory | Where-Object {-not $_ -eq 0} | Should -Be @()
+        $BfPointer | Should -Be 0
     }
     It '要素数を指定して配列を生成する場合' {
         Initialize-BfRuntime -MemorySize 12000
