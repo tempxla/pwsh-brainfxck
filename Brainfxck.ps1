@@ -97,7 +97,7 @@ function JumpIfNotZeroAtPointer($State) {
     $false
 }
 
-function Run-BfMachine {
+function Invoke-BfMachine {
     param (
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         $BfMachine,

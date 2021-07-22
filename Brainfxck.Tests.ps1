@@ -117,13 +117,13 @@ Describe 'JumpIfNotZeroAtPointer' {
     }
 }
 
-Describe 'Run-BfMachine' {
+Describe 'Invoke-BfMachine' {
     It 'ABCを出力する' {
         $source = @'
 ++++++++++++++++++++++++++++++++++++++++
 +++++++++++++++++++++++++.+.+.>++++++++++.
 '@
-        New-BfMachine | Run-BfMachine -Source $source
+        New-BfMachine | Invoke-BfMachine -Source $source
         $BfStdout | Should -Be "ABC`n"
     }
     It 'Hello World!を出力する' {
@@ -132,7 +132,7 @@ Describe 'Run-BfMachine' {
 ++>-]<.>+++++++++++[<+++++>-]<.>++++++++[<+++>-]<.+++.------.--------.[-]>
 ++++++++[<++++>-]<+.[-]++++++++++.
 '@
-        New-BfMachine | Run-BfMachine -Source $source
+        New-BfMachine | Invoke-BfMachine -Source $source
         $BfStdout | Should -Be "Hello World!`n"
     }
 }
