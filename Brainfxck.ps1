@@ -32,3 +32,8 @@ function IncrementValueAtPointer {
 function DecrementValueAtPointer {
     $script:BfMemory[$script:BfPointer]--
 }
+
+# Op: .
+function OutputValueAtPointer {
+    Write-Host -NoNewline -Object $script:BfMemory[$script:BfPointer]
+}

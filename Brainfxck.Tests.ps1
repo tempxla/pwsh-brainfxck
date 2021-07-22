@@ -54,6 +54,12 @@ Describe 'DecrementValueAtPointer' {
         $BfMemory[0] | Should -Be -2
     }
 }
-Describe 'DecrementValueAtPointer' {
-    # undefined
+
+Describe 'OutputValueAtPointer' {
+    It 'ポインターが指す値を出力に書き出す' {
+        Initialize-BfRuntime
+        Mock Write-Host {}
+        OutputValueAtPointer
+        Assert-MockCalled Write-Host -Exactly 1 -Scope It -ParameterFilter { $Object -eq '0' }
+    }
 }
