@@ -24,3 +24,13 @@ Describe 'IncrementPointer' {
         $BfPointer | Should -Be 2
     }
 }
+
+Describe 'DecrementPointer' {
+    It 'ポインターをデクリメントする' {
+        Initialize-BfRuntime
+        DecrementPointer
+        $BfPointer | Should -Be -1
+        DecrementPointer
+        $BfPointer | Should -Be -2
+    }
+}

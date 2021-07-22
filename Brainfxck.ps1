@@ -16,3 +16,7 @@ function Initialize-BfRuntime {
 function IncrementPointer {
     $script:BfPointer++
 }
+
+function DecrementPointer {
+    $script:BfPointer--
+}
