@@ -11,7 +11,7 @@ Describe 'New-BfMachine' {
         $vm.Stdin | Should -Be ''
     }
     It 'ユーザーの入力ありの場合' {
-        $vm = New-BfMachine -UserInput 'abc'
+        $vm = New-BfMachine -Stdin 'abc'
         $vm.Stdin | Should -Be 'abc'
     }
 }
@@ -67,7 +67,7 @@ Describe 'OutputValueAtPointer' {
 
 Describe 'StoreValueAtPointer' {
     It '入力から1バイト読み込み、ポインターが指す先に代入する。' {
-        $vm = New-BfMachine -UserInput 'abc'
+        $vm = New-BfMachine -Stdin 'abc'
         StoreValueAtPointer -State $vm
         $vm.Memory[0] | Should -Be 'a'
         $vm.Stdin | Should -Be 'bc'
