@@ -1,8 +1,6 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-[string]$script:BfStdout = ''
-
 function New-BfMachine {
     param (
         [string]$Source = '',
@@ -14,6 +12,7 @@ function New-BfMachine {
         ProgramCounter = 0
         Source         = $Source
         Stdin          = $Stdin
+        Stdout         = ''
         ParenthesesMap = ParseParentheses $Source
     }
 }
@@ -70,7 +69,7 @@ function DecrementValueAtPointer($State) {
 # Op: .
 function OutputValueAtPointer($State) {
     Write-Host -NoNewline -Object ([char]($State.Memory[$State.Pointer]))
-    $script:BfStdout += ([char]($State.Memory[$State.Pointer]))
+    $State.Stdout += ([char]($State.Memory[$State.Pointer]))
 }
 
 # Op: ,
@@ -105,11 +104,11 @@ function Invoke-BfMachine {
         [string]$Source,
         [string]$Stdin
     )
-    $script:BfStdout = ''
-
     $BfMachine.Source = $Source
     $BfMachine.ParenthesesMap = ParseParentheses $Source
     $BfMachine.Stdin = $Stdin
+    $BfMachine.Stdout = ''
+
     while ($BfMachine.ProgramCounter -lt $Source.Length) {
         $mustMoveCounter = $true
         switch ($Source[$BfMachine.ProgramCounter]) {
@@ -126,4 +125,6 @@ function Invoke-BfMachine {
             $BfMachine.ProgramCounter++
         }
     }
+
+    $BfMachine
 }

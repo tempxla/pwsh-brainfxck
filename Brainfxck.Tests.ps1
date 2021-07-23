@@ -123,8 +123,7 @@ Describe 'Invoke-BfMachine' {
 ++++++++++++++++++++++++++++++++++++++++
 +++++++++++++++++++++++++.+.+.>++++++++++.
 '@
-        New-BfMachine | Invoke-BfMachine -Source $source
-        $BfStdout | Should -Be "ABC`n"
+        New-BfMachine | Invoke-BfMachine -Source $source | ForEach-Object Stdout | Should -Be "ABC`n"
     }
     It 'Hello World!を出力する' {
         $source = @'
@@ -132,7 +131,6 @@ Describe 'Invoke-BfMachine' {
 ++>-]<.>+++++++++++[<+++++>-]<.>++++++++[<+++>-]<.+++.------.--------.[-]>
 ++++++++[<++++>-]<+.[-]++++++++++.
 '@
-        New-BfMachine | Invoke-BfMachine -Source $source
-        $BfStdout | Should -Be "Hello World!`n"
+        New-BfMachine | Invoke-BfMachine -Source $source | ForEach-Object Stdout | Should -Be "Hello World!`n"
     }
 }
