@@ -40,7 +40,7 @@ function ParseParentheses([string]$Source) {
         Write-Output $_.ToString()
         throw '★Error at Parse Parenthesis: Too Many "]"'
     }
-    if ($openParens.Count > 0) {
+    if ($openParens.Count -lt 0) {
         throw '★Error at Parse Parenthesis: Too Many "["'
     }
     $parenMap
